@@ -31,6 +31,17 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *queryResolver) DummyLinks(ctx context.Context) ([]*model.Link, error) {
+	var links []*model.Link
+	dummyLink := model.Link{
+		Title:   "our dummy link",
+		Address: "https://address.org",
+		User:    &model.User{Name: "admin"},
+	}
+	links = append(links, &dummyLink)
+	return links, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

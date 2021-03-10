@@ -16,6 +16,7 @@ type User {
 
 type Query {
   links: [Link!]!
+  dummyLinks: [Link!]!
 }
 
 input NewLink {

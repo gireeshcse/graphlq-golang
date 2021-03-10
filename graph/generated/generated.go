@@ -58,7 +58,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Links func(childComplexity int) int
+		DummyLinks func(childComplexity int) int
+		Links      func(childComplexity int) int
 	}
 
 	User struct {
@@ -75,6 +76,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Links(ctx context.Context) ([]*model.Link, error)
+	DummyLinks(ctx context.Context) ([]*model.Link, error)
 }
 
 type executableSchema struct {
@@ -167,6 +169,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RefreshToken(childComplexity, args["input"].(model.RefreshTokenInput)), true
+
+	case "Query.dummyLinks":
+		if e.complexity.Query.DummyLinks == nil {
+			break
+		}
+
+		return e.complexity.Query.DummyLinks(childComplexity), true
 
 	case "Query.links":
 		if e.complexity.Query.Links == nil {
@@ -271,6 +280,7 @@ type User {
 
 type Query {
   links: [Link!]!
+  dummyLinks: [Link!]!
 }
 
 input NewLink {
@@ -746,6 +756,41 @@ func (ec *executionContext) _Query_links(ctx context.Context, field graphql.Coll
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Links(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Link)
+	fc.Result = res
+	return ec.marshalNLink2ᚕᚖgithubᚗcomᚋgireeshcseᚋgraphlqᚑgolangᚋgraphᚋmodelᚐLinkᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_dummyLinks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().DummyLinks(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2214,6 +2259,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_links(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "dummyLinks":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_dummyLinks(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

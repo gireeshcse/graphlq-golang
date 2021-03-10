@@ -30,7 +30,37 @@ go run github.com/99designs/gqlgen generate
 
 * If you remove schemas then we have to related functions from schema.resolvers.go as well.Otherwise validation errors will occur
 
+#### Dummy Query
 
+```
+query {
+	dummyLinks{
+    title
+    address,
+    user{
+      name
+    }
+  }
+}
+```
+
+Output
+
+```
+{
+  "data": {
+    "dummyLinks": [
+      {
+        "title": "our dummy link",
+        "address": "https://address.org",
+        "user": {
+          "name": "admin"
+        }
+      }
+    ]
+  }
+}
+```
 
 ### References
 
