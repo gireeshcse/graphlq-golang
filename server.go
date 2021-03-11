@@ -10,11 +10,15 @@ import (
 	"github.com/spf13/viper"
 
 	database "github.com/gireeshcse/graphlq-golang/internal/pkg/db/mysql"
+	"github.com/gireeshcse/graphlq-golang/internal/auth"
+	"github.com/gireeshcse/graphlq-golang/internal/pkg/jwt"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gireeshcse/graphlq-golang/graph"
 	"github.com/gireeshcse/graphlq-golang/graph/generated"
+
+	"github.com/go-chi/chi"
 )
 
 const defaultPort = "8080"
@@ -53,13 +57,17 @@ func main() {
 
 	database.InitDB(configuration.Database.DBHost,configuration.Database.DBPort,configuration.Database.DBUser,configuration.Database.DBPassword,configuration.Database.DBName)
 	database.Migrate()
+	jwt.InitJWT(configuration.JWT.JWTSecret)
+
+	router := chi.NewRouter()
+	router.Use(auth.Middleware())
 	
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", srv)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", strconv.Itoa(configuration.Server.Port))
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(configuration.Server.Port), nil))
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(configuration.Server.Port), router))
 }

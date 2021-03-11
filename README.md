@@ -97,6 +97,104 @@ Output
 }
 ```
 
+#### Create user
+
+```
+mutation {
+  createUser(input: {username: "user2", password: "123"})
+}
+```
+
+Output
+
+```
+{
+  "data": {
+    "createUser": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTU1MzA4ODEsInVzZXJuYW1lIjoidXNlcjIifQ.OZgWVto0rj7rP9iKb7PtbWaeh_3j2dwRbAvDYxwgpuU"
+  }
+}
+```
+
+#### Auth 
+
+```
+mutation {
+  createLink(input: {title: "real link!", address: "www.graphql.org"}){
+    user{
+      name
+    }
+  }
+}
+```
+
+Output
+
+```
+{
+  "errors": [
+    {
+      "message": "access denied",
+      "path": [
+        "createLink"
+      ]
+    }
+  ],
+  "data": null
+}
+```
+
+#### Authenticate User
+
+```
+mutation {
+  login(input: {username: "user2", password: "123"})
+}
+```
+
+Output
+
+```
+{
+  "data": {
+    "login": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTU1MzI3NTYsInVzZXJuYW1lIjoidXNlcjIifQ.nyAt_EBdGkRvvJLno6WMsd4cpXtowJrMhRJKLRm1ZuQ"
+  }
+}
+```
+
+#### Create Link
+
+HTTP Header
+
+```
+{
+  "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTU1MzI3NTYsInVzZXJuYW1lIjoidXNlcjIifQ.nyAt_EBdGkRvvJLno6WMsd4cpXtowJrMhRJKLRm1ZuQ"
+}
+```
+
+```
+mutation {
+  createLink(input: {title: "graphql link!", address: "www.graphql.org"}){
+    user{
+      name
+    }
+  }
+}
+```
+
+Output
+
+```
+{
+  "data": {
+    "createLink": {
+      "user": {
+        "name": "user2"
+      }
+    }
+  }
+}
+```
+
 ### Query
 
 ```

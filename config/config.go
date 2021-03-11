@@ -4,6 +4,7 @@ package config
 type Configurations struct {
 	Server       ServerConfigurations
 	Database     DatabaseConfigurations
+	JWT JWTConfigurations
 }
 
 // ServerConfigurations exported
@@ -18,4 +19,9 @@ type DatabaseConfigurations struct {
 	DBPassword string
 	DBHost string
 	DBPort string
+}
+
+// JWTConfigurations exported
+type JWTConfigurations struct {
+	JWTSecret string
 }
