@@ -71,6 +71,65 @@ Output
 }
 ```
 
+### Mutation 
+
+```
+mutation create{
+  createLink(input: {title: "Books", address: "books.com"}){
+    title,
+    address,
+    id,
+  }
+}
+```
+
+Output
+
+```
+{
+  "data": {
+    "createLink": {
+      "title": "Books",
+      "address": "books.com",
+      "id": "1"
+    }
+  }
+}
+```
+
+### Query
+
+```
+query {
+  links {
+    title
+    address
+    id
+  }
+}
+```
+
+Output
+
+```
+{
+  "data": {
+    "links": [
+      {
+        "title": "Books",
+        "address": "books.com",
+        "id": "1"
+      },
+      {
+        "title": "Softwares",
+        "address": "sw.com",
+        "id": "2"
+      }
+    ]
+  }
+}
+```
+
 ### Database Setup
 
 * Run mysql server and create database hackernews;
