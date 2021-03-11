@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+database:
+  dbname: "hackernews"
+  dbuser: "dbuser"
+  dbpassword: "dbpassword"
+  dbhost: "localhost"
+  dbport: "3306"
