@@ -41,6 +41,12 @@ go run github.com/99designs/gqlgen generate
 
 #### Dummy Query
 
+CURL for this
+
+```
+curl 'http://localhost:8080/query' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:8080' --data-binary '{"query":"query {\n\tdummyLinks{\n    title\n    address,\n    user{\n      name\n    }\n  }\n}"}' --compressed
+```
+
 ```
 query {
 	dummyLinks{
